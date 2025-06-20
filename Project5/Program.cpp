@@ -18,7 +18,7 @@ Program::Program()
     g_pProgram = this;
 
     // Load font
-    if (!font.loadFromFile("arial.ttf")) {
+    if (!font.loadFromFile("assets/fonts/arial.ttf")) {
         std::cerr << "Failed to load font!" << std::endl;
         exit(1);
     }
