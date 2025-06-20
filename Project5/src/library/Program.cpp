@@ -1,6 +1,6 @@
-#include "Program.h"
+#include <library/Program.h>
+#include <library/Timer.h>
 
-#include "Timer.h"
 // Global pointer to the Program instance
 Program* g_pProgram = nullptr;
 

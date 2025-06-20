@@ -1,4 +1,5 @@
-#include "Program.h"
+#include <library/Program.h>
+
 #include "imgui/imgui-SFML.h"
 #include "imgui/imgui.h"
 
