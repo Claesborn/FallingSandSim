@@ -1,9 +1,8 @@
-#include "imgui/imgui.h"
-#include "imgui/imgui-SFML.h"
-
 #include "Program.h"
-int main()
-{
+#include "imgui/imgui-SFML.h"
+#include "imgui/imgui.h"
+
+int main() {
     Program ID;
     ID.Run();
     return 0;

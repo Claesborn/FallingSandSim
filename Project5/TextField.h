@@ -1,158 +1,156 @@
-#pragma once
+#ifndef __TEXT_FIELD_H__
+#define __TEXT_FIELD_H__
+
 #include <SFML/Graphics.hpp>
 #include <iostream>
+
 #include "functional"
 
 // std::vector<std::unique_ptr<TextField> textFields;
-// textFields.push_back(std::make_unique<TextField>(position, font, textsize, function<void>(const std::string&))
-// Functions require string input by const string reference
+// textFields.push_back(std::make_unique<TextField>(position, font,
+// textsize, function<void>(const std::string&)) Functions require
+// string input by const string reference
 
 /*Update handle events with
 
 while(window.pollEvent(event))
 {
-	for (auto& textField : textFields)
-	{
-		textField->Update(window);
-	}
+    for (auto& textField : textFields)
+    {
+        textField->Update(window);
+    }
 
-	if (event.type == sf::Event::Closed)
-	{
-		window.close();
-	}
+    if (event.type == sf::Event::Closed)
+    {
+        window.close();
+    }
 
-	if (event.type == sf::Event::KeyPressed)
-	{
-		if (event.key.code == sf::Keyboard::Escape)
-		{
-			window.close();
-		}
-		if (event.key.code == sf::Keyboard::Enter)
-		{
-			selectedTextField->execute();
-		}
-	}
+    if (event.type == sf::Event::KeyPressed)
+    {
+        if (event.key.code == sf::Keyboard::Escape)
+        {
+            window.close();
+        }
+        if (event.key.code == sf::Keyboard::Enter)
+        {
+            selectedTextField->execute();
+        }
+    }
 
-	if (event.type == sf::Event::TextEntered && selectedTextField != nullptr)
-	{
-		if (event.text.unicode == '\b' && !userInput.empty())
-		{
-			userInput.pop_back();
-		}
-		else if (event.text.unicode < 128 && event.text.unicode != '\b')
-		{
-			userInput += static_cast<char>(event.text.unicode);
-		}
+    if (event.type == sf::Event::TextEntered && selectedTextField
+!= nullptr)
+    {
+        if (event.text.unicode == '\b' && !userInput.empty())
+        {
+            userInput.pop_back();
+        }
+        else if (event.text.unicode < 128 && event.text.unicode !=
+'\b')
+        {
+            userInput += static_cast<char>(event.text.unicode);
+        }
 
-		selectedTextField->setString(userInput);
+        selectedTextField->setString(userInput);
 
-	}
+    }
 
-	if (event.type == sf::Event::MouseButtonPressed)
-	{
-		selectedTextField = TextField::textFieldSelected;
+    if (event.type == sf::Event::MouseButtonPressed)
+    {
+        selectedTextField = TextField::textFieldSelected;
 
-		if (selectedTextField != nullptr)
-		{
-			userInput.clear();
-			userInput = selectedTextField->getString();
-		}
-	}
+        if (selectedTextField != nullptr)
+        {
+            userInput.clear();
+            userInput = selectedTextField->getString();
+        }
+    }
 }
 */
 
-class TextField
-{
-
-
+class TextField {
 private:
-
-	sf::RectangleShape field;
-	sf::Text text;
-	bool isSelected = false;
-	std::function<void(const std::string&)> onExecute;
+    sf::RectangleShape                      field;
+    sf::Text                                text;
+    bool                                    isSelected = false;
+    std::function<void(const std::string&)> onExecute;
 
 public:
-	static TextField* textFieldSelected;
-	static std::string userInput;
+    static TextField*  textFieldSelected;
+    static std::string userInput;
 
-	TextField(sf::Vector2f pos, sf::Font& font, int textSize, std::function<void(const std::string&)> function)
-		:onExecute(function)
-	{
-		field.setPosition(pos);
-		field.setFillColor(sf::Color::White);
-		field.setSize(sf::Vector2f(50.f, 30.f));
-		field.setOutlineColor(sf::Color::Black);
-		field.setOutlineThickness(2);
+    TextField(sf::Vector2f pos, sf::Font& font, int textSize,
+              std::function<void(const std::string&)> function)
+        : onExecute(function) {
+        field.setPosition(pos);
+        field.setFillColor(sf::Color::White);
+        field.setSize(sf::Vector2f(50.f, 30.f));
+        field.setOutlineColor(sf::Color::Black);
+        field.setOutlineThickness(2);
 
-		text.setFont(font);
-		text.setCharacterSize(textSize);
-		text.setString("");
-		text.setFillColor(sf::Color::Black);
-		text.setPosition(field.getPosition());
-		userInput.reserve(30);
-	}
+        text.setFont(font);
+        text.setCharacterSize(textSize);
+        text.setString("");
+        text.setFillColor(sf::Color::Black);
+        text.setPosition(field.getPosition());
+        userInput.reserve(30);
+    }
 
-	void Update(sf::RenderWindow& window)
-	{
-		sf::FloatRect fieldBounds = field.getGlobalBounds();
-		sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    void Update(sf::RenderWindow& window) {
+        sf::FloatRect fieldBounds = field.getGlobalBounds();
+        sf::Vector2i  mousePos    = sf::Mouse::getPosition(window);
 
-		if (fieldBounds.contains(static_cast<sf::Vector2f>(mousePos)) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
-		{
-			if (textFieldSelected != nullptr && textFieldSelected != this)
-			{
-				textFieldSelected->isSelected = false;
-				textFieldSelected->field.setFillColor(sf::Color::White);
-			}
+        if (fieldBounds.contains(
+                static_cast<sf::Vector2f>(mousePos)) &&
+            sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            if (textFieldSelected != nullptr &&
+                textFieldSelected != this) {
+                textFieldSelected->isSelected = false;
+                textFieldSelected->field.setFillColor(
+                    sf::Color::White);
+            }
 
-			textFieldSelected = this;
-			isSelected = true;
-			field.setFillColor(sf::Color(150, 150, 150));
-		
-		}
-		else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-		{
-			if (textFieldSelected == this)
-			{
-				isSelected = false;
-				field.setFillColor(sf::Color::White);
-				textFieldSelected = nullptr;
-			}
-		}
-	}
+            textFieldSelected = this;
+            isSelected        = true;
+            field.setFillColor(sf::Color(150, 150, 150));
 
-	void Render(sf::RenderWindow& window)
-	{
-		window.draw(field);
-		window.draw(text);
-	}
+        } else if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            if (textFieldSelected == this) {
+                isSelected = false;
+                field.setFillColor(sf::Color::White);
+                textFieldSelected = nullptr;
+            }
+        }
+    }
 
-	sf::String getString()
-	{
-		if (text.getString().isEmpty())
-			return std::string();
-		return text.getString();
-	}
+    void Render(sf::RenderWindow& window) {
+        window.draw(field);
+        window.draw(text);
+    }
 
-	void execute()
-	{
-		onExecute(text.getString());
-		text.setString("");
-	}
+    sf::String getString() {
+        if (text.getString().isEmpty()) return std::string();
+        return text.getString();
+    }
 
-	void setString(std::string str)
-	{
-		if (textFieldSelected != nullptr)
-		{
-			textFieldSelected->text.setString(str);
-			field.setSize(sf::Vector2f(	std::max(45, static_cast<int>(text.getGlobalBounds().width)) + 5,
-										std::max(25, static_cast<int>(text.getGlobalBounds().height) + 5)));
-		}
-		else
-		{
-			std::cout << "No textfield set" << std::endl;
-		}
-	}
+    void execute() {
+        onExecute(text.getString());
+        text.setString("");
+    }
+
+    void setString(std::string str) {
+        if (textFieldSelected != nullptr) {
+            textFieldSelected->text.setString(str);
+            field.setSize(sf::Vector2f(
+                std::max(45, static_cast<int>(
+                                 text.getGlobalBounds().width)) +
+                    5,
+                std::max(25, static_cast<int>(
+                                 text.getGlobalBounds().height) +
+                                 5)));
+        } else {
+            std::cout << "No textfield set" << std::endl;
+        }
+    }
 };
 
+#endif
