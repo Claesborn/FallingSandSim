@@ -23,15 +23,13 @@ private:
     HWND             hwnd;
     WNDPROC          originalWndProc;
     sf::RenderWindow window;
-    sf::Event        event;
     // Setup variables
     sf::Image                                    m_image;
     sf::Texture                                  texture;
     sf::Sprite                                   sprite;
     sf::Font                                     font;
     std::vector<std::unique_ptr<ButtonOverhead>> buttons;
-    bool     buttonHeld = false;
-    sf::Text text;
+    bool buttonHeld = false;
 
     std::vector<Pixel> pixelVec;
     std::vector<Pixel> activePixelVec;

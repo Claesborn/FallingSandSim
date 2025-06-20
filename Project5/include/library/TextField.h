@@ -2,9 +2,10 @@
 #define __TEXT_FIELD_H__
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Window/Mouse.hpp>
+#include <functional>
 #include <iostream>
-
-#include "functional"
+#include <string>
 
 // std::vector<std::unique_ptr<TextField> textFields;
 // textFields.push_back(std::make_unique<TextField>(position, font,
@@ -69,27 +70,24 @@ while(window.pollEvent(event))
 
 class TextField {
 private:
-    sf::RectangleShape                      field;
-    sf::Text                                text;
-    bool                                    isSelected = false;
-    std::function<void(const std::string&)> onExecute;
+    sf::RectangleShape                     field;
+    sf::Text                               text;
+    bool                                   isSelected = false;
+    std::function<void(const sf::String&)> onExecute;
 
 public:
     static TextField*  textFieldSelected;
     static std::string userInput;
 
     TextField(sf::Vector2f pos, sf::Font& font, int textSize,
-              std::function<void(const std::string&)> function)
-        : onExecute(function) {
+              std::function<void(const sf::String&)> function)
+        : text(font, "", textSize), onExecute(function) {
         field.setPosition(pos);
         field.setFillColor(sf::Color::White);
         field.setSize(sf::Vector2f(50.f, 30.f));
         field.setOutlineColor(sf::Color::Black);
         field.setOutlineThickness(2);
 
-        text.setFont(font);
-        text.setCharacterSize(textSize);
-        text.setString("");
         text.setFillColor(sf::Color::Black);
         text.setPosition(field.getPosition());
         userInput.reserve(30);
@@ -101,7 +99,7 @@ public:
 
         if (fieldBounds.contains(
                 static_cast<sf::Vector2f>(mousePos)) &&
-            sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
             if (textFieldSelected != nullptr &&
                 textFieldSelected != this) {
                 textFieldSelected->isSelected = false;
@@ -113,7 +111,8 @@ public:
             isSelected        = true;
             field.setFillColor(sf::Color(150, 150, 150));
 
-        } else if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        } else if (sf::Mouse::isButtonPressed(
+                       sf::Mouse::Button::Left)) {
             if (textFieldSelected == this) {
                 isSelected = false;
                 field.setFillColor(sf::Color::White);
@@ -142,10 +141,10 @@ public:
             textFieldSelected->text.setString(str);
             field.setSize(sf::Vector2f(
                 std::max(45, static_cast<int>(
-                                 text.getGlobalBounds().width)) +
+                                 text.getGlobalBounds().size.x)) +
                     5,
                 std::max(25, static_cast<int>(
-                                 text.getGlobalBounds().height) +
+                                 text.getGlobalBounds().size.y) +
                                  5)));
         } else {
             std::cout << "No textfield set" << std::endl;

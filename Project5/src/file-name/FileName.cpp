@@ -19,7 +19,7 @@ int main() {
 
     // Create the window
     sf::RenderWindow window(
-        sf::VideoMode(windowWidth, windowHeight),
+        sf::VideoMode({windowWidth, windowHeight}),
         "Selection Sort Visualization");
     window.setFramerateLimit(60);
 
@@ -39,9 +39,8 @@ int main() {
         for (unsigned int j = 1; j <= i; ++j) {
             // Check for window events in the inner loop
             // (so we can close while sorting)
-            sf::Event event;
-            while (window.pollEvent(event)) {
-                if (event.type == sf::Event::Closed) {
+            while (const auto event = window.pollEvent()) {
+                if (event->is<sf::Event::Closed>()) {
                     window.close();
                     return 0;
                 }
@@ -75,9 +74,8 @@ int main() {
 
     // Keep the window open after sorting is finished
     while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
+        while (const auto event = window.pollEvent()) {
+            if (event->is<sf::Event::Closed>()) {
                 window.close();
             }
         }
@@ -104,7 +102,7 @@ void drawBars(sf::RenderWindow&       window,
         float xPos = i * barWidth;
         float yPos =
             static_cast<float>(window.getSize().y) - data[i];
-        bar.setPosition(xPos, yPos);
+        bar.setPosition({xPos, yPos});
 
         // White bars
         bar.setFillColor(sf::Color::White);

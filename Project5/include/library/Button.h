@@ -9,6 +9,8 @@
 #include <optional>
 #include <vector>
 
+#include "SFML/Graphics/Text.hpp"
+
 enum class ButtonState { Idle = 0, Hover, Clicked, Disabled };
 
 class ButtonOverhead {
@@ -51,6 +53,7 @@ public:
                 const sf::Font& font, unsigned int textSize,
                 bool isActiveAtStart = true)
         : state(ButtonState::Idle),
+          text(font, buttonText, textSize),
           idleColor(idleCol),
           hoverColor(hoverCol),
           clickedColor(clickCol),
@@ -64,9 +67,6 @@ public:
         button.setOutlineColor(sf::Color::Black);
         button.setOutlineThickness(2);
 
-        text.setFont(font);
-        text.setCharacterSize(textSize);
-        text.setString(buttonText);
         text.setFillColor(sf::Color::White);  // Text color
         centerTextInButton();
     }
@@ -115,8 +115,9 @@ public:
 private:
     const void centerTextInButton() {
         sf::FloatRect textBounds = text.getLocalBounds();
-        text.setOrigin(textBounds.left + textBounds.width / 2.0f,
-                       textBounds.top + textBounds.height / 2.0f);
+        text.setOrigin(
+            {textBounds.position.x + textBounds.size.x / 2.0f,
+             textBounds.position.y + textBounds.size.y / 2.0f});
         text.setPosition(button.getPosition() +
                          button.getSize() / 2.0f);
     }
@@ -152,7 +153,8 @@ private:
 
         if (buttonBounds.contains(
                 static_cast<sf::Vector2f>(mousePos))) {
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            if (sf::Mouse::isButtonPressed(
+                    sf::Mouse::Button::Left)) {
                 state = ButtonState::Clicked;
                 for (auto& onClick : onClicks) {
                     if (onClick && !wasClicked) {
@@ -196,6 +198,7 @@ public:
            std::function<void()> clickAction,
            bool                  isActiveAtStart = true)
         : state(ButtonState::Idle),
+          text(font, buttonText, textSize),
           idleColor(idleCol),
           hoverColor(hoverCol),
           clickedColor(clickCol),
@@ -230,10 +233,11 @@ public:
 private:
     const void centerTextInButton() {
         sf::FloatRect textBounds = text.getLocalBounds();
-        text.setOrigin(textBounds.left + textBounds.width / 2.0f,
-                       textBounds.top + textBounds.height / 2.0f);
-        text.setPosition(button.getPosition() +
-                         button.getSize() / 2.0f);
+        text.setOrigin(
+            {textBounds.position.x + textBounds.size.x / 2.0f,
+             textBounds.position.y + textBounds.size.y / 2.0f});
+        text.setPosition(
+            {button.getPosition() + button.getSize() / 2.0f});
     }
 
     void updateButtonState(const sf::RenderWindow& window) {
@@ -246,7 +250,8 @@ private:
 
         if (buttonBounds.contains(
                 static_cast<sf::Vector2f>(mousePos))) {
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            if (sf::Mouse::isButtonPressed(
+                    sf::Mouse::Button::Left)) {
                 state = ButtonState::Clicked;
 
                 if (onClick && !wasClicked) {

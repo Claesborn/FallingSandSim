@@ -14,11 +14,12 @@ LRESULT CALLBACK CustomWindowProc(HWND hwnd, UINT uMsg,
 }
 
 Program::Program()
-    : window(sf::VideoMode(1920, 1080), "SFML works!") {
+    : window(sf::VideoMode({1920, 1080}), "SFML works!"),
+      sprite(texture) {
     g_pProgram = this;
 
     // Load font
-    if (!font.loadFromFile("assets/fonts/arial.ttf")) {
+    if (!font.openFromFile("assets/fonts/arial.ttf")) {
         std::cerr << "Failed to load font!" << std::endl;
         exit(1);
     }
@@ -45,7 +46,7 @@ void Program::Run() {
 void Program::Initialize() {
     initWindow();
 
-    m_image.create(1900, 1000);
+    m_image.resize({1900, 1000});
     pixelVec.reserve(300000);
     activePixelVec.reserve(10000);
     initButtons();
@@ -134,8 +135,8 @@ void Program::updatePixels() {
     for (auto& pixel : activePixelVec) {
         if (pixel.m_flags & Fixed) continue;
         // cache values
-        int x = pixel.m_pos.x;
-        int y = pixel.m_pos.y;
+        auto x = pixel.m_pos.x;
+        auto y = pixel.m_pos.y;
 
         // Make sure position is within image bounds
         if (y < 0 ||
@@ -145,26 +146,26 @@ void Program::updatePixels() {
             x >= static_cast<int>(m_image.getSize().x - 1))
             continue;
 
-        auto pix = m_image.getPixel(x, y + 1);
+        auto pix = m_image.getPixel({x, y + 1});
         if (pix == sf::Color::Black) {
             // set the new pixel location
-            m_image.setPixel(x, y + 1, pixel.m_color);
+            m_image.setPixel({x, y + 1}, pixel.m_color);
 
             // clear old pixel location
-            m_image.setPixel(x, y, sf::Color::Black);
+            m_image.setPixel({x, y}, sf::Color::Black);
 
             // Update pixel internal position
             pixel.m_pos.y = pixel.m_pos.y + 1;
-        } else if (m_image.getPixel(x + 1, y + 1) ==
+        } else if (m_image.getPixel({x + 1, y + 1}) ==
                        sf::Color::Black ||
-                   m_image.getPixel(x - 1, y + 1) ==
+                   m_image.getPixel({x - 1, y + 1}) ==
                        sf::Color::Black) {
             bool canFallLeft =
-                (x > 0) && (m_image.getPixel(x - 1, y + 1) ==
+                (x > 0) && (m_image.getPixel({x - 1, y + 1}) ==
                             sf::Color::Black);
             bool canFallRight =
                 (x < static_cast<int>(m_image.getSize().x - 1)) &&
-                (m_image.getPixel(x + 1, y + 1) ==
+                (m_image.getPixel({x + 1, y + 1}) ==
                  sf::Color::Black);
 
             if (canFallLeft || canFallRight) {
@@ -177,8 +178,8 @@ void Program::updatePixels() {
                 else
                     dir = 1;
 
-                m_image.setPixel(x + dir, y + 1, pixel.m_color);
-                m_image.setPixel(x, y, sf::Color::Black);
+                m_image.setPixel({x + dir, y + 1}, pixel.m_color);
+                m_image.setPixel({x, y}, sf::Color::Black);
                 pixel.m_pos.x += dir;
                 pixel.m_pos.y += 1;
             }
@@ -224,25 +225,27 @@ void Program::Render() {
 }
 
 void Program::HandleEvent() {
-    while (window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed) {
+    while (const auto event = window.pollEvent()) {
+        if (event->is<sf::Event::Closed>()) {
             window.close();
         }
 
-        if (event.type == sf::Event::KeyPressed) {
-            if (event.key.code == sf::Keyboard::Escape) {
+        if (const auto* keyPressed =
+                event->getIf<sf::Event::KeyPressed>()) {
+            if (keyPressed->scancode ==
+                sf::Keyboard::Scancode::Escape) {
                 window.close();
             }
         }
 
-        if (event.type == sf::Event::TextEntered) {
+        if (event->is<sf::Event::TextEntered>()) {
         }
 
-        if (event.type == sf::Event::MouseButtonPressed) {
+        if (event->is<sf::Event::MouseButtonPressed>()) {
             buttonHeld = true;
         }
 
-        if (event.type == sf::Event::MouseButtonReleased) {
+        if (event->is<sf::Event::MouseButtonReleased>()) {
             buttonHeld = false;
         }
     }
@@ -259,13 +262,13 @@ void Program::spawnSand() {
     auto posX = pos.x + xOffset;
     auto posY = pos.y + yOffset;
 
-    if (m_image.getPixel(posX, posY) == sf::Color::Black &&
+    if (m_image.getPixel({posX, posY}) == sf::Color::Black &&
         (posX < m_image.getSize().x || posX > 0) &&
         (posY < m_image.getSize().y || posY > 0)) {
         auto pixel = Pixel(SAND, sf::Vector2i(posX, posY));
         pixelVec.push_back(pixel);
         activePixelVec.push_back(pixel);
-        m_image.setPixel(posX, posY, pixelVec.back().m_color);
+        m_image.setPixel({posX, posY}, pixelVec.back().m_color);
     }
 }
 
