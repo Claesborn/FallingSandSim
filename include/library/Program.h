@@ -20,19 +20,16 @@ LRESULT CALLBACK CustomWindowProc(HWND hwnd, UINT uMsg,
 class Program {
 private:
     // Engine variables
-    HWND             hwnd;
-    WNDPROC          originalWndProc;
     sf::RenderWindow window;
     // Setup variables
     sf::Image                                    m_image;
-    sf::Texture                                  texture;
-    sf::Sprite                                   sprite;
-    sf::Font                                     font;
-    std::vector<std::unique_ptr<ButtonOverhead>> buttons;
+    sf::Texture                                  m_texture;
+    sf::Sprite                                   m_sprite;
+    sf::Font                                     m_font;
     bool buttonHeld = false;
 
-    std::vector<Pixel> pixelVec;
-    std::vector<Pixel> activePixelVec;
+    std::vector<Pixel> m_pixelVec;
+    std::vector<Pixel> m_activePixelVec;
 
 public:
     // Constructors/destructors
@@ -44,20 +41,14 @@ public:
     void    Update();
     void    Render();
     void    HandleEvent();
-    void    LoadImage(const std::string& filePathStr);
-    LRESULT HandleCustomWindowProc(HWND hwnd, UINT uMsg,
-                                   WPARAM wParam, LPARAM lParam);
     void    initWindow();
-
-    // Button functions
-    void initButtons();
-    void ButtonPress();
-    void ButtonPress2();
 
     // Pixel stuff
     void updatePixels();
+    void updateSandPixel(Pixel& pixel, int x, int y);
+    void updateWaterPixel(Pixel& pixel, int x, int y);
     void checkFixedPixels();
-    void spawnSand();
+    void spawnPixels();
 };
 
 #endif

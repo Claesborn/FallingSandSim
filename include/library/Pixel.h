@@ -24,21 +24,18 @@ struct SandColor {
 
 struct WaterColor {
     static sf::Color getRandom() {
-        uint8_t r =
-            10 + rand() % 21;  // 1030 (very dark blue component)
-        uint8_t g = 60 + rand() % 31;  // 6090 (hint of green)
-        uint8_t b =
-            180 + rand() % 51;  // 180230 (strong blue channel)
-        return sf::Color(r, g, b,
-                         200);  // optional alpha for transparency
+        uint8_t r = 10 + rand() % 21;  // 10-30
+        uint8_t g = 60 + rand() % 31;  // 60-90
+        uint8_t b = 180 + rand() % 51; // 180-230
+        return sf::Color(r, g, b, 200);
     }
 };
 
 struct MurkyWaterColor {
     static sf::Color getRandom() {
-        uint8_t r = 15 + rand() % 16;    // 1530
-        uint8_t g = 40 + rand() % 31;    // 4070
-        uint8_t b = 100 + rand() % 51;   // 100150
+        uint8_t r = 15 + rand() % 16;    // 15-30
+        uint8_t g = 40 + rand() % 31;    // 40-70
+        uint8_t b = 100 + rand() % 51;   // 100-150
         return sf::Color(r, g, b, 220);  // slightly opaque
     }
 };
