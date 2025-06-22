@@ -53,3 +53,7 @@ Simply run the following to compile:
 ```sh
 xmake
 ```
+
+### TODO
+ - Set water pixels as fixed when idle for a certain time, .5 seconds perhaps?
+ - Find a good way of signalling surrounding pixels to check if they need to act when a pixel moves.
