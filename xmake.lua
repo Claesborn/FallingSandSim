@@ -11,12 +11,6 @@ target("library")
     add_includedirs("include", { public = true })
     add_packages("sfml", "imgui", "imgui-sfml", { public = true })
 
-target("FileName")
-    set_kind("binary")
-    add_files("src/file-name/FileName.cpp")
-    add_deps("library")
-    add_installfiles("assets/**/*")
-
 target("Source")
     set_kind("binary")
     add_files("src/source/Source.cpp")
